@@ -360,7 +360,7 @@ struct MenuView: View {
 
     private var footer: some View {
         HStack {
-            Text(verbatim: "v1.0.0")
+            Text(verbatim: "v" + (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"))
                 .font(.system(size: 10))
                 .foregroundStyle(Theme.textSecondary.opacity(0.7))
             Spacer()
