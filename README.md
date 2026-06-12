@@ -8,6 +8,8 @@
 
 全栈 Swift, 协议引擎使用 [TunnelKit](https://github.com/partout-io/tunnelkit) —— 纯 Swift 实现的 OpenVPN 协议, 开源客户端 Passepartout 的同款引擎.
 
+<p align="center"><img src="docs/screenshot.png" width="560" alt="LiteVPN 菜单栏面板 (连接状态)"></p>
+
 ## 功能
 
 - **菜单栏常驻** (无 Dock 图标), 一键连接 / 断开
