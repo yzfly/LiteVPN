@@ -1,0 +1,94 @@
+name: LiteVPN
+options:
+  bundleIdPrefix: com.yzfly
+  deploymentTarget:
+    macOS: "13.0"
+  createIntermediateGroups: true
+
+packages:
+  TunnelKit:
+    # v6.3.2 (commit f2c0fb0) 的本地副本, 剥离了 WireGuard 部分 —
+    # 上游已归档且其依赖的 wireguard-apple 仓库已被删除, 远端引用不再可靠
+    path: Vendor/tunnelkit
+
+settings:
+  base:
+    DEVELOPMENT_TEAM: 3HNKBKJ59V
+    CODE_SIGN_STYLE: Automatic
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    ENABLE_USER_SCRIPT_SANDBOXING: false
+
+targets:
+  LiteVPN:
+    type: application
+    platform: macOS
+    sources:
+      - App
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: LiteVPN
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSUIElement: true
+        LSApplicationCategoryType: public.app-category.utilities
+        NSHumanReadableCopyright: "© 2026 云中江树"
+    entitlements:
+      path: App/LiteVPN.entitlements
+      properties:
+        com.apple.developer.networking.networkextension:
+          - packet-tunnel-provider
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
+        com.apple.security.files.user-selected.read-only: true
+        com.apple.security.application-groups:
+          - $(TeamIdentifierPrefix)group.com.yzfly.LiteVPN
+        keychain-access-groups:
+          - $(AppIdentifierPrefix)group.com.yzfly.LiteVPN
+    dependencies:
+      - target: LiteVPNTunnel
+      - package: TunnelKit
+        product: TunnelKit
+      - package: TunnelKit
+        product: TunnelKitOpenVPN
+    postBuildScripts:
+      # 修复 Xcode 在 appex 内重复嵌入 Frameworks 目录的问题 (TunnelKit README 提及)
+      - name: Strip nested Frameworks from appex
+        script: rm -rf "${BUILT_PRODUCTS_DIR}/${PLUGINS_FOLDER_PATH}/LiteVPNTunnel.appex/Contents/Frameworks"
+
+  LiteVPNTunnel:
+    type: app-extension
+    platform: macOS
+    sources:
+      - Tunnel
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.yzfly.LiteVPN.Tunnel
+    info:
+      path: Tunnel/Info.plist
+      properties:
+        CFBundleDisplayName: LiteVPNTunnel
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.networkextension.packet-tunnel
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).PacketTunnelProvider
+    entitlements:
+      path: Tunnel/LiteVPNTunnel.entitlements
+      properties:
+        com.apple.developer.networking.networkextension:
+          - packet-tunnel-provider
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
+        com.apple.security.network.server: true
+        com.apple.security.application-groups:
+          - $(TeamIdentifierPrefix)group.com.yzfly.LiteVPN
+        keychain-access-groups:
+          - $(AppIdentifierPrefix)group.com.yzfly.LiteVPN
+    dependencies:
+      - package: TunnelKit
+        product: TunnelKitOpenVPNAppExtension
+      - package: TunnelKit
+        product: TunnelKitLZO
