@@ -80,9 +80,7 @@ xcodebuild -project LiteVPN.xcodeproj -scheme LiteVPN \
 
 On first connect macOS will ask to add a VPN configuration — allow it once.
 
-> The tunnel ships as an App Extension (`.appex`), suitable for personal builds and App Store distribution. Distributing outside the App Store with Developer ID requires Apple's Network Extension Developer ID entitlement and a System Extension instead.
->
-> **Note on the release binaries**: due to the above Apple restriction, the prebuilt app in Releases runs only on Macs registered to the author's developer profile. For everyone else, building from source with your own Apple Developer account (5 minutes) is the supported path.
+> **No prebuilt binary is shipped.** A macOS Network Extension app can't be distributed in a form that runs on arbitrary Macs without per-machine signing, so building from source with your own Apple Developer account (about 5 minutes) is the supported path.
 
 ## Usage
 

@@ -80,9 +80,7 @@ xcodebuild -project LiteVPN.xcodeproj -scheme LiteVPN \
 
 首次连接时 macOS 会弹出"LiteVPN 想要添加 VPN 配置"的系统确认, 允许一次即可.
 
-> 隧道使用 App Extension (`.appex`) 形态, 适合本机自用与 App Store 分发. 若要以 Developer ID 在 App Store 外分发, 需向 Apple 申请 Network Extension 的 Developer ID 授权并改用 System Extension 形态.
->
-> **关于 Release 中的预编译包**: 受上述 Apple 限制, Releases 里的成品 app 只能在作者开发者账号注册过的设备上运行. 其他用户请用自己的开发者账号从源码构建 (约 5 分钟).
+> **不提供预编译包.** macOS Network Extension 应用无法以"任意 Mac 下载即用"的形式分发 (需逐机签名), 因此请用自己的开发者账号从源码构建 (约 5 分钟).
 
 ## 使用
 
